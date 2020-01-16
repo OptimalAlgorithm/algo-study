@@ -1,5 +1,4 @@
 //BOJ_7576_토마토
-//34분
 #include <iostream>
 #include <queue>
 using namespace std;
