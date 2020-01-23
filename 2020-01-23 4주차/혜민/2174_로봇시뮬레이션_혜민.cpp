@@ -1,19 +1,19 @@
-//BOJ_2174_·Îº¿½Ã¹Ä·¹ÀÌ¼Ç
+//BOJ_2174_ë¡œë´‡ì‹œë®¬ë ˆì´ì…˜
 #include <iostream>
 #include <vector>
 using namespace std;
 #define MAX 101
 
-int C, R, N, M; //A´Â C, B´Â R
+int C, R, N, M; //AëŠ” C, BëŠ” R
 int map[MAX][MAX];
 
 typedef struct Robot {
-	int r, c, d; //Çà, ¿­, ¹æÇâ
+	int r, c, d; //í–‰, ì—´, ë°©í–¥
 	Robot(int _r, int _c, int _d) { r = _r;	c = _c;	d = _d; }
 };
 typedef struct Order {
-	int r, t; //·Îº¿, È½¼ö
-	char o; //¸í·É Á¾·ù
+	int r, t; //ë¡œë´‡, íšŸìˆ˜
+	char o; //ëª…ë ¹ ì¢…ë¥˜
 	Order(int _r, char _o, int _t) { r = _r; o = _o; t = _t; }
 };
 vector <Robot> robot;
@@ -21,36 +21,31 @@ vector <Order> order;
 
 void input()
 {
-	robot.push_back(Robot(0, 0, 0)); //0¹ø ·Îº¿ ¾È ¾²·Á°í ±×³É ¸¸µé¾î µÒ...
+	robot.push_back(Robot(0, 0, 0)); //0ë²ˆ ë¡œë´‡ ì•ˆ ì“°ë ¤ê³  ê·¸ëƒ¥ ë§Œë“¤ì–´ ë‘ ...
 
 	cin >> C >> R;
 	cin >> N >> M;
 
-	for (int i = 0; i < N; i++) //·Îº¿
+	for (int i = 0; i < N; i++) //ë¡œë´‡
 	{
 		int r, c;
 		char d;
 		cin >> c >> r >> d;
-		map[R - r + 1][c] = robot.size(); //ÇàÀÌ ¾Æ·¡¿¡¼­ ½ÃÀÛÇÏ´Ï±î...
+		map[R - r + 1][c] = robot.size(); //í–‰ì´ ì•„ë˜ì—ì„œ ì‹œì‘í•˜ë‹ˆê¹Œ...
 
-		switch (d)
-		{
-		case 'N':
-			robot.push_back(Robot(R - r + 1, c, 0));
-			break;
-		case 'W':
-			robot.push_back(Robot(R - r + 1, c, 1));
-			break;
-		case 'S':
-			robot.push_back(Robot(R - r + 1, c, 2));
-			break;
-		case 'E':
-			robot.push_back(Robot(R - r + 1, c, 3));
-			break;
-		}
+		if (d == 'N') //ì•„ìŠ¤í‚¤ ì½”ë“œë¡œ ê³„ì‚°í•´ë³´ì..
+			d = 'A';
+		else if (d == 'W')
+			d = 'B';
+		else if (d == 'S')
+			d = 'C';
+		else
+			d = 'D';
+
+		robot.push_back(Robot(R - r + 1, c, d-'A'));
 	}
 
-	for (int i = 0; i < M; i++) //¸í·É
+	for (int i = 0; i < M; i++) //ëª…ë ¹
 	{
 		int r, t;
 		char o;
@@ -65,28 +60,28 @@ void move(int b, char o)
 	int rightd[4] = { 3, 0, 1, 2 };
 	int leftd[4] = { 1, 2, 3, 0 };
 
-	if (o == 'L') //¿ŞÂÊ ¹æÇâ ÀüÈ¯
+	if (o == 'L') //ì™¼ìª½ ë°©í–¥ ì „í™˜
 		robot[b].d = leftd[robot[b].d];
 
-	else if (o == 'R') //¿À¸¥ÂÊ ¹æÇâ ÀüÈ¯
+	else if (o == 'R') //ì˜¤ë¥¸ìª½ ë°©í–¥ ì „í™˜
 		robot[b].d = rightd[robot[b].d];
 
-	else //ÀüÁø
+	else //ì „ì§„
 	{
-		int nr = robot[b].r + d[robot[b].d][0]; //»õ ÁÂÇ¥
+		int nr = robot[b].r + d[robot[b].d][0]; //ìƒˆ ì¢Œí‘œ
 		int nc = robot[b].c + d[robot[b].d][1];
 
-		if (nr < 1 || nc < 1 || nr > R || nc > C) //º®¿¡ ºÎ‹HÈû
+		if (nr < 1 || nc < 1 || nr > R || nc > C) //ë²½ì— ë¶€ë”«í˜
 		{
 			cout << "Robot " << b << " crashes into the wall" << endl;
 			exit(0);
 		}
-		else if (map[nr][nc] > 0) //´Ù¸¥ ·Îº¿ÀÌ Á¸Àç
+		else if (map[nr][nc] > 0) //ë‹¤ë¥¸ ë¡œë´‡ì´ ì¡´ì¬
 		{
 			cout << "Robot " << b << " crashes into robot " << map[nr][nc] << endl;
 			exit(0);
 		}
-		else //ÀüÁø °¡´É
+		else //ì „ì§„ ê°€ëŠ¥
 		{
 			map[robot[b].r][robot[b].c] = 0;
 			map[nr][nc] = b;
@@ -104,7 +99,7 @@ void solve()
 			move(order[i].r, order[i].o);
 	}
 
-	cout << "OK" << endl; //Á¦´ë·Î ³¡³µÀ» °æ¿ì
+	cout << "OK" << endl; //ì œëŒ€ë¡œ ëë‚¬ì„ ê²½ìš°
 }
 
 int main()
