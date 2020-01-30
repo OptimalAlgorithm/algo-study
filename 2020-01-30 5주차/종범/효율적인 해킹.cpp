@@ -14,6 +14,7 @@ bool check[MAX+1];
 vector<int> graph[MAX+1];
 vector<int> v;
 
+// bfs로 그래프를 탐색하여 컴퓨터마다 해킹할 수 있는 컴퓨터 대수 반환
 int bfs(int Sx) {
 	queue<int> q;
 	q.push(Sx);
@@ -49,11 +50,12 @@ int main() {
 
 	for (int i = 1; i <= N; i++) {
 		int ret = bfs(i);
-		ans = max(ret, ans);
+		ans = max(ret, ans);	// 최대값 찾기
 		v.push_back(ret);
 		memset(check, false, sizeof(check));
 	}
 
+	// 최대값과 같은 인덱스+1이 곧 컴퓨터 번호
 	for (int i = 0; i < v.size(); i++) {
 		if (ans == v[i])
 			cout << i + 1 << ' ';
