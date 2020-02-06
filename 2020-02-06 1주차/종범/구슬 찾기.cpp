@@ -27,7 +27,6 @@ int dfs1(int now) {
 }
 
 int dfs2(int now) {
-	check[now] = true;
 
 	int cnt = 1;
 	for (int i = 0; i < graph2[now].size(); i++) {
@@ -52,7 +51,7 @@ int main() {
 		graph2[a].push_back(b);	// a보다 무게가 작은 구슬은 b이다
 	}
 
-	// i번 구슬보다 무게가 큰 구슬이 몇개이며 그 구슬이 중간에서 제외되는지 확인
+	// i번 구슬보다 무게가 큰 구슬이 몇개이며 그 구슬이 중간위치보다 큰지 확인
 	for (int i = 1; i <= N; i++) {
 		check[i] = true;
 		int ret = dfs1(i);
@@ -61,11 +60,11 @@ int main() {
 		memset(check, false, sizeof(check));
 	}
 
-	// i번 구슬보다 무게가 작은 구슬이 몇개이며 그 구슬이 중간에서 제외되는지 확인
+	// i번 구슬보다 무게가 작은 구슬이 몇개이며 그 구슬이 중간위치보다 작은지 확인
 	for (int i = 1; i <= N; i++) {
 		check[i] = true;
 		int ret = dfs2(i);
-		if (ret > (N + 1) / 2)
+		if (ret > (N + 1) / 2)	
 			result[i] = true;
 		memset(check, false, sizeof(check));
 	}
