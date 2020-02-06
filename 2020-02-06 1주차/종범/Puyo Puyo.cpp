@@ -1,4 +1,6 @@
 // https://www.acmicpc.net/problem/11559
+// 현 보드판 상황에서 서로 다른색 1개 이상의 연쇄가 일어났더라도 횟수는 + 1임
+
 
 #include<iostream>
 #include<cstring>
