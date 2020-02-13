@@ -52,6 +52,14 @@ void input() {
 
         }
     }
+    
+    for(int i = 0; i < N; i++) {
+        for(int j = 0; j< M; j++) {
+            cout <<"["<<room[i][j]<<"]";
+
+        }
+        cout<<endl;
+    }
 }
 
 bool checkIsSameColor(int posY, int posX, char color) {
@@ -120,26 +128,53 @@ void solution() {
             
         }
         
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<M; j++) {
-                visited[i][j] = false;
-            }
-        }
         //뿌요들 터트리고, 위의 뿌요들 내려오게 만들기
         //기존 뿌요 자리에는 . 집어넣기
         //그런데 뿌요들 하나도 없으면 return false;
-        cout<<"뿌요들 위치";
-        for(int i=0; i<track.size(); i++) {
-            cout<<"["<<track[i].first<<","<<track[i].second<<"]";
-            
-            int puyoY = track[i].first;
-            int puyoX = track[i].second;
-            
-            
+        if(track.size() != 0) {
+            for(int i=0; i<track.size(); i++) {
+                cout<<"["<<track[i].first<<","<<track[i].second<<"]";
+
+                int puyoY = track[i].first;
+                int puyoX = track[i].second;
+
+                for(int i=puyoY; i>=0; i--) {
+                    if(i == 0){
+                        room[0][puyoX] = '.';
+                    }
+                    else {
+                        room[i][puyoX] = room[i-1][puyoX];
+                    }
+                }
+
+                for(int i=0; i<track.size(); i++) {
+                    if(track[i].second == puyoX)track[i].first++;
+                }
+                cout<<endl;
+                for(int i=0; i<N; i++) {
+                    for(int j=0; j<M; j++) {
+                        cout<<"["<<room[i][j]<<"]";
+                    }
+                    cout<<endl;
+                }
+            }
+
+            track.clear();
+
+
+            //방문 초기화
+            for(int i=0; i<N; i++) {
+                for(int j=0; j<M; j++) {
+                    visited[i][j] = false;
+                }
+            }
+
+        }else{
+            break;
         }
-        break;
+
     }
-    
+
     
 }
 
