@@ -74,7 +74,7 @@ void solve()
 {
 	bfs(); //얼음이 녹는데 걸리는 시간을 구한다.
 
-	while (ans < maxdays) //이분 탐색으로 최솟값을 찾아나간다.
+	while (ans < maxdays) //이분 탐색으로 최값을 찾아나간다.
 	{
 		mid = ans + (maxdays - ans) / 2;
 
