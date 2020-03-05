@@ -9,9 +9,9 @@
 using namespace std;
 
 int R, C;
-int map[100][100];
+int map[50][50];
 int maxDist{ 0 };
-int visited[100][100];
+int visited[50][50];
 
 int dx[4] = { 0,0,1,-1 };
 int dy[4] = { 1,-1,0,0 };
@@ -37,7 +37,7 @@ int main() {
 		for (int c{ 0 }; c < C; c++) {
 			if (map[r][c] == 1) {
 				memset(visited, 0, sizeof(visited));
-				visited[r][c] == 1;
+				visited[r][c] = 1;
 
 				//r,c 에서 가장 긴 루트 찾기
 				vector<pair<int, int>> temp;
