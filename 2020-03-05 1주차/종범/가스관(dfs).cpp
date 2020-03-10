@@ -1,15 +1,16 @@
 // https://www.acmicpc.net/problem/2931
+// 해킹당한 위치는 M과 Z와 인접해 있을 수 없다
 
 #include<bits/stdc++.h>
 using namespace std;
 
 const int MAX = 30;
-int R, C, sx, sy, tx, ty, X, Y;	// 범위, 시작, 도착, 구멍
+int R, C, sx, sy, tx, ty, X, Y;	// 범위, 시작, 도착, 해킹위치
 char MAP[MAX][MAX];
 bool visited[MAX][MAX];
+char pipe[7] = { '|', '-', '+', '1','2','3','4' };
 bool flag;
 char ans;
-int total_pipe;
 
 int dx[] = { 0,0,1,-1 };
 int dy[] = { 1,-1,0,0 };
@@ -64,7 +65,7 @@ int get(char c, int dir) {
 			return 1;
 		}
 	}
-	else if (c == '5') {
+	else if (c == '|') {
 		switch (dir) {
 		case 0:
 			return -1;
@@ -76,7 +77,7 @@ int get(char c, int dir) {
 			return 3;
 		}
 	}
-	else if (c == '6') {
+	else if (c == '-') {
 		switch (dir) {
 		case 0:
 			return 0;
@@ -88,7 +89,7 @@ int get(char c, int dir) {
 			return -1;
 		}
 	}
-	else if (c == '7') {
+	else if (c == '+') {
 		return dir;
 	}
 }
@@ -123,18 +124,15 @@ void dfs(int x, int y, int dir, int cnt) {
 		if (cnt == 0) {		// 해킹당한 곳을 찾았다
 			for (int i = 0; i < 7; i++) {
 				if (flag) return;				// 답이 나왔으면 리턴
-				char next = char('1' + i);
-				MAP[nx][ny] = next;
-				int next_dir;
-				X = nx, Y = ny, ans = next;		// 정답변수 갱신
-				next_dir = get(MAP[nx][ny], dir);
+				MAP[nx][ny] = pipe[i];
+				X = nx, Y = ny, ans = pipe[i];		// 정답변수 갱신
+				int next_dir = get(MAP[nx][ny], dir);
 				if (next_dir == -1) continue;
 				visited[nx][ny] = true;
 				dfs(nx, ny, next_dir, cnt + 1);
 				visited[nx][ny] = false;
 				MAP[nx][ny] = '.';
 			}
-
 		}
 		else return;
 	}
@@ -149,18 +147,14 @@ void dfs(int x, int y, int dir, int cnt) {
 }
 
 void solve() {
-	visited[sx][sy] = visited[tx][ty] = 1;
+	visited[sx][sy] = visited[tx][ty] = true;
 	for (int i = 0; i < 4; ++i) {
 		int nx = sx + dx[i];
 		int ny = sy + dy[i];
-		if (ny < 1 || nx > R || ny < 1 || ny > C)continue;
+		if (ny < 1 || nx > R || ny < 1 || ny > C) continue;
 		if (MAP[nx][ny] != '.')		// M 인접에는 무조건 파이프가 존재
 			dfs(sx, sy, i, 0);
 	}
-
-	if (ans == '5') ans = '|';
-	else if (ans == '6') ans = '-';
-	else if (ans == '7') ans = '+';
 	cout << X << ' ' << Y << ' ' << ans << '\n';
 }
 
@@ -180,21 +174,6 @@ int main() {
 			else if (MAP[i][j] == 'Z') {
 				tx = i;
 				ty = j;
-			}
-			else if (MAP[i][j] == '|') {
-				MAP[i][j] = '5';
-				total_pipe++;
-			}
-			else if (MAP[i][j] == '-') {
-				total_pipe++;
-				MAP[i][j] = '6';
-			}
-			else if (MAP[i][j] == '+') {
-				total_pipe++;
-				MAP[i][j] = '7';
-			}
-			else if (MAP[i][j] != '.') {
-				total_pipe++;
 			}
 		}
 	}
