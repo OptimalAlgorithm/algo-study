@@ -24,6 +24,9 @@ int answerY = 0;
 int answerX = 0;
 char answerBlock;
 
+int missingBlockY = -1;
+int missingBlockX = -1;
+
 struct Dir {
     int y;
     int x;
@@ -52,30 +55,32 @@ void input() {
 }
 
 bool isInBoundary(int y,int x) {
-    if(0<=y && y<R && 0<=x && y<R && room[y][x] != '.')return true;
+    if(0<=y && y<R && 0<=x && x<C && room[y][x] != '.' && visited[y][x]!=true)return true;
     
     return false;
 }
 
 bool isConnectedPipeExist(int y,int x) {
-    if(0<=y && y<R && 0<=x && y<R){
+    if(0<=y && y<R && 0<=x && x<C){
         return true;
     }
     
     return false;
 }
 
-char tryMatchingPipe(int y, int x,int dir, int prevDir) {
+char tryMatchingPipe(int dir, int prevDir) {
     
     char block;
-
-    if ((prevDir == 2 && dir == 0) || (prevDir == 1 && dir == 3))block = '1';
+//    cout<<"here you go:"<<prevDir<<"->"<<dir<<endl;
+    if ((prevDir == 1 && dir == 3) || (prevDir == 2 && dir == 0))block = '1';
     else if((prevDir == 0 && dir == 3) || (prevDir == 2 && dir == 1))block = '2';
-    else if((prevDir == 3 && dir == 1) && (prevDir == 0 && dir == 2))block = '3';
+    else if((prevDir == 3 && dir == 1) || (prevDir == 0 && dir == 2))block = '3';
     else if((prevDir == 3 && dir == 0) ||(prevDir == 1 && dir == 2))block = '4';
     else if(prevDir == dir && (prevDir == 2|| prevDir == 3))block = '-';
     else if(prevDir == dir && (prevDir == 0 || prevDir == 1))block = '|';
     else block = '0';
+    
+//    cout<<"what?"<<block<<endl;
     return block;
 }
 
@@ -84,38 +89,80 @@ void findMissingBlock(int prevY, int prevX, int y, int x, int prevDir) {
     
     vector<int> candidate;
     
+    
+    missingBlockY = y;
+    missingBlockX = x;
+    
+//    cout<<missingBlockY<<","<<missingBlockX<<endl;
     for(int i=0; i<4; i++) {
         int nextY = y + moveDir[i].y;
         int nextX = x + moveDir[i].x;
-        
+//        cout<<"시도:"<<nextY<<","<<nextX<<":"<<room[nextY][nextX]<<endl;
         if(isConnectedPipeExist(nextY, nextX) && !visited[nextY][nextX] && room[nextY][nextX] != '.'){
+//            cout<<"=>"<<nextY<<","<<nextX<<":"<<room[nextY][nextX]<<endl;
             
             if(room[nextY][nextX] == '1'){
-                candidate.push_back(1);
-                candidate.push_back(2);
+                if(isInBoundary(missingBlockY + moveDir[1].y, missingBlockX + moveDir[1].x)) {
+                    candidate.push_back(1);
+                }
+                if(isInBoundary(missingBlockY + moveDir[2].y, missingBlockX + moveDir[2].x)) {
+                    candidate.push_back(2);
+                }
             }else if(room[nextY][nextX] == '2') {
-                candidate.push_back(2);
-                candidate.push_back(0);
+
+                if(isInBoundary(missingBlockY + moveDir[2].y, missingBlockX + moveDir[2].x)) {
+                    candidate.push_back(2);
+                }
+                if(isInBoundary(missingBlockY + moveDir[0].y, missingBlockX + moveDir[0].x)) {
+                    candidate.push_back(0);
+                }
             }else if(room[nextY][nextX] == '3') {
-                candidate.push_back(0);
-                candidate.push_back(3);
+                if(isInBoundary(missingBlockY + moveDir[0].y, missingBlockX + moveDir[0].x)) {
+                    candidate.push_back(0);
+                }
+                if(isInBoundary(missingBlockY + moveDir[3].y, missingBlockX + moveDir[3].x)) {
+                    candidate.push_back(3);
+                }
             }else if(room[nextY][nextX] == '4') {
-                candidate.push_back(3);
-                candidate.push_back(1);
+                if(isInBoundary(missingBlockY + moveDir[3].y, missingBlockX + moveDir[3].x)) {
+                    candidate.push_back(3);
+                }
+                if(isInBoundary(missingBlockY + moveDir[1].y, missingBlockX + moveDir[1].x)) {
+                    candidate.push_back(1);
+                }
             }else if(room[nextY][nextX] == '|'){
-                candidate.push_back(0);
-                candidate.push_back(1);
+                if(isInBoundary(missingBlockY + moveDir[0].y, missingBlockX + moveDir[0].x)) {
+                    candidate.push_back(0);
+                }
+                if(isInBoundary(missingBlockY + moveDir[1].y, missingBlockX + moveDir[1].x)) {
+                    candidate.push_back(1);
+                }
             }else if(room[nextY][nextX] == '-') {
-                candidate.push_back(2);
-                candidate.push_back(3);
+                if(isInBoundary(missingBlockY + moveDir[2].y, missingBlockX + moveDir[2].x)) {
+                    candidate.push_back(2);
+                }
+//                cout<<"엥"<<missingBlockY+moveDir[3].y<<","<<missingBlockX + moveDir[3].x;
+                if(isInBoundary(missingBlockY + moveDir[3].y, missingBlockX + moveDir[3].x)) {
+                    candidate.push_back(3);
+                }
+
             }else{//+
-                candidate.push_back(i);
+                if(isInBoundary(missingBlockY + moveDir[i].y, missingBlockX + moveDir[i].x)) {
+                    candidate.push_back(i);
+                }
             }
             
             for(std::vector<int>::size_type j=0; j<candidate.size(); j++) {
-                block = tryMatchingPipe(y, x, candidate[j], prevDir);
+                
+//                cout<<y<<"("<<prevDir<<"->"<<candidate[j]<<")"<<endl;
+                block = tryMatchingPipe(candidate[j], prevDir);
+//                cout<<":::"<<block<<endl;
                 if(block != '0') {
+                    
                     answerBlock = block;
+//                    cout<<"??"<<answerBlock;
+                    room[y][x] = answerBlock;
+//                    cout<<answerBlock;
                     return;
                 }
             }
@@ -128,6 +175,7 @@ void findMissingBlock(int prevY, int prevX, int y, int x, int prevDir) {
 }
 
 int findNextDirection(char tube, int dir) {
+    
     int nextDir = 0;
     switch(tube) {
         case '1':
@@ -158,27 +206,41 @@ int findNextDirection(char tube, int dir) {
 
 void dfs(int prevY, int prevX, int currentY, int currentX, int dir) {
 
-    if(room[currentY][currentX] != '+')visited[currentY][currentX] = true;
-    
-    if(room[currentY][currentX] == 'Z')return; //끝까지 간다 +를 찾기 위해
-    
-    
-    
-    if(isConnectedPipeExist(currentY,currentX) && room[currentY][currentX] == '.') {
-        answerY = currentY+1;
-        answerX = currentX+1;
-        findMissingBlock(prevY, prevX, currentY, currentX, dir);
-    }
-    
     char currentBlock = room[currentY][currentX];
     int nextY = 0;
     int nextX = 0;
     int nextDir = 0;
+
+    
+    if(room[currentY][currentX] == 'Z')return; //끝까지 간다 +를 찾기 위해
+    
+    visited[currentY][currentX] = true;
+    
+    if(room[currentY][currentX] == '+')visited[currentY][currentX] = false;
+    
+    if(currentY == missingBlockY && currentX == missingBlockX) {
+//        cout<<"??????????????"<<endl;
+        answerBlock = '+';
+        return;
+    }
+    
+//    cout<<"["<<currentY<<","<<currentX<<":"<<room[currentY][currentX]<<"]"<<endl;
+    if(room[currentY][currentX] == '.') {
+        answerY = currentY+1;
+        answerX = currentX+1;
+        findMissingBlock(prevY, prevX, currentY, currentX, dir);
+        currentBlock = room[currentY][currentX];
+//        cout<<"================================"<<endl; cout<<"(수정)["<<currentY<<","<<currentX<<":"<<room[currentY][currentX]<<"]"<<endl;
+//        cout<<"================================"<<endl;
+//
+    }
+
+    
+    
+//    cout<<"->"<<currentBlock;
     
     nextDir = findNextDirection(currentBlock,dir);
     
-    //FIXME - 그냥 끝까지 진행하고 파이프가 있는데 진행할 수 없으면 +로 바꾸자
-//    if(tryMatchingPipe(currentY, currentX, int dir, dir)//방향이적합한지 확인
     
     nextY = currentY + moveDir[nextDir].y;
     nextX = currentX + moveDir[nextDir].x;
@@ -196,8 +258,8 @@ void solution() {
         nextY = sourceY + moveDir[i].y;
         nextX = sourceX + moveDir[i].x;
         dir = i;
-        
-        if(isInBoundary(nextY, nextX)){
+
+        if(isInBoundary(nextY, nextX) && room[nextY][nextX] != 'Z'){
             break;
         }
     }
