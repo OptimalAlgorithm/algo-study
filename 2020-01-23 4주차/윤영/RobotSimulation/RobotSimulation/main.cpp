@@ -36,6 +36,7 @@ struct Order {
         cnt = _cnt;
     }
 };
+
 struct Dir {
     int y;
     int x;
@@ -153,7 +154,6 @@ void doOrder(int currentRobotIndex, int orderIndex) {
             isRobotStopped = true;
             return;
         }
-        
     }
 }
 
