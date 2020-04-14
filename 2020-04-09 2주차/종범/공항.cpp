@@ -7,9 +7,9 @@ const int MAX = 100001;
 int G, P, ans;
 int parent[MAX];
 
-int find(int x) {
+int getParent(int x) {
 	if (parent[x] == x) return x;
-	return parent[x] = find(parent[x]);
+	return parent[x] = getParent(parent[x]);
 }
 
 int main() {
@@ -24,13 +24,12 @@ int main() {
 	for (int i = 1; i <= P; i++) {
 		int num;
 		cin >> num;
-		int gate = find(num);
-		
-		if (gate != 0) {		
-			ans++;
-			parent[gate] = find(gate - 1);
-		}
-		else break;			// 1~num 중 도킹할 곳이 없어 gate 값이 0일때
+		int gate = getParent(num);
+
+		if (gate == 0) break;	// 1~num 중 도킹할 곳이 없어 gate 값이 0일때
+
+		parent[gate] = getParent(gate - 1);
+		ans++;
 	}
 
 	cout << ans << '\n';
