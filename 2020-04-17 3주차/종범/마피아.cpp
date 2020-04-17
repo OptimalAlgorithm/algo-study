@@ -6,7 +6,7 @@ using namespace std;
 const int MAX = 17;
 int N, ans;
 int MAP[MAX];		// 유죄지수
-int R[MAX][MAX];
+int R[MAX][MAX];	// 유죄지수 변동지수
 bool alive[MAX];	// 생존여부
 int mafia;
 
@@ -46,7 +46,7 @@ void brute(int citizen, char day, int cnt) {
 	}
 	else if (day == 'a') {	// 낮인경우
 		int person = 0, maxMAP = 0;
-		for (int i = N - 1; i >= 0; i--) {	// 유저지수 높으면서 가장 아래번호 인 사람 구하기
+		for (int i = N - 1; i >= 0; i--) {	// 유죄지수 높으면서 가장 아래번호 인 사람 구하기
 			if (!alive[i]) continue;
 			if (MAP[i] >= maxMAP) {
 				maxMAP = MAP[i];
