@@ -8,7 +8,7 @@ int N, M, K;
 struct Fireball {
 	int r, c, m, s, d;
 	bool dead;
-	Fireball(int _r, int _c, int _m, int _s, int _d) { r = _r; c = _c;	m = _m; s = _s; d = _d; dead = false; }
+	Fireball(int _r, int _c, int _m, int _s, int _d) { r = _r; c = _c; m = _m; s = _s; d = _d; dead = false; }
 };
 vector <Fireball> fireball;
 int dir[8][2] = { {-1,0}, {-1,1}, {0,1}, {1,1}, {1,0}, {1,-1}, {0,-1}, {-1,-1} };
